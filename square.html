@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>问答广场</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
+            padding: 20px;
+        }
+        .square-container {
+            text-align: center;
+            background-color: white;
+            padding: 40px 50px;
+            border-radius: 20px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+            max-width: 900px;
+            width: 90%;
+            transition: all 0.5s ease;
+            transform: translateY(20px);
+            opacity: 0;
+            margin: 30px auto;
+        }
+        .square-container.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .question-list {
+            text-align: left;
+            margin-bottom: 40px;
+        }
+        .question-item {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        .question-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+        .question-actions {
+            position: absolute;
+            right: 15px;
+            top: 15px;
+            display: flex;
+            gap: 10px;
+        }
+        .like-button, .collect-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            color: #666;
+            transition: all 0.3s ease;
+            transform: scale(1);
+        }
+        .like-button:hover, .collect-button:hover {
+            transform: scale(1.1);
+        }
+        .like-button:hover, .collect-button:hover {
+            color: #12c2e9;
+        }
+        .like-button.active {
+            color: #f64f59;
+        }
+        .collect-button.active {
+            color: #c471ed;
+        }
+        .answer-form {
+            margin-top: 20px;
+            padding: 15px;
+            border-top: 1px solid #eee;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #666;
+        }
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            height: 120px;
+            resize: vertical;
+            transition: all 0.3s ease;
+            background: #fafafa;
+        }
+        textarea:focus {
+            outline: none;
+            border-color: #12c2e9;
+            box-shadow: 0 0 0 3px rgba(18, 194, 233, 0.1);
+            background: white;
+        }
+        .submit-button {
+            background: linear-gradient(to right, #12c2e9, #c471ed, #f64f59);
+            color: white;
+            border: none;
+            padding: 12px 35px;
+            font-size: 16px;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            outline: none;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+        }
+        .submit-button:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+        }
+        .submit-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(0, 0, 0, 0.25);
+        }
+        .back-button {
+            background: linear-gradient(to right, #00a3ff, #0088ff);
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            font-size: 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        }
+        .back-button:active {
+            transform: translateY(1px);
+        }
+    .subject-tags {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+        .subject-tag {
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 1px solid #ddd;
+            background: #f5f5f5;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .subject-tag.active {
+            background: #12c2e9;
+            color: white;
+            border-color: #12c2e9;
+        }
+        .subject-tag:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        </style>
+</head>
+<body>
+    <div class="square-container" id="main-container">
+        <div style="position: absolute; top: 20px; left: 20px;">
+            <button class="back-button" onclick="history.back()">返回</button>
+        </div>
+        <h1>问答广场</h1>
+        <div class="subject-tags">
+            <button class="subject-tag active" data-subject="math">数学</button>
+            <button class="subject-tag" data-subject="physics">物理</button>
+            <button class="subject-tag" data-subject="chemistry">化学</button>
+            <button class="subject-tag" data-subject="biology">生物</button>
+        </div>
+        <div class="question-list">
+            <div class="question-item">
+                <div class="question-actions">
+                <button class="like-button" onclick="toggleLike(this)">❤️</button>
+                <button class="collect-button" onclick="toggleCollect(this)">⭐</button>
+            </div>
+            <h3 data-subject="math">数学 - 导数问题</h3>
+                <p>如何求函数 f(x) = x^3 - 3x^2 + 2 的极值点？</p>
+                <div class="answer-form">
+                    <form>
+                        <div class="form-group">
+                            <label for="answer">你的回答</label>
+                            <textarea id="answer" placeholder="请输入你的回答"></textarea>
+                        </div>
+                        <button type="submit" class="submit-button">提交回答</button>
+                    </form>
+                </div>
+            </div>
+            <div class="question-item">
+                <div class="question-actions">
+                <button class="like-button" onclick="toggleLike(this)">❤️</button>
+                <button class="collect-button" onclick="toggleCollect(this)">⭐</button>
+            </div>
+            <h3 data-subject="physics">物理 - 力学问题</h3>
+                <p>如何分析物体在斜面上的受力情况？</p>
+                <div class="answer-form">
+                    <form>
+                        <div class="form-group">
+                            <label for="answer">你的回答</label>
+                            <textarea id="answer" placeholder="请输入你的回答"></textarea>
+                        </div>
+                        <button type="submit" class="submit-button">提交回答</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+<script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.getElementById('main-container');
+            setTimeout(() => {
+                container.classList.add('show');
+            }, 50);
+        });
+    function toggleLike(button) {
+            button.classList.toggle('active');
+        }
+        function toggleCollect(button) {
+            button.classList.toggle('active');
+        }
+        document.querySelectorAll('.subject-tag').forEach(tag => {
+            tag.addEventListener('click', function() {
+                document.querySelectorAll('.subject-tag').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                const subject = this.dataset.subject;
+                document.querySelectorAll('.question-item').forEach(item => {
+                    const itemSubject = item.querySelector('h3').dataset.subject;
+                    item.style.display = itemSubject === subject ? 'block' : 'none';
+                });
+            });
+        });
+        </script>
+</body>
+</html>

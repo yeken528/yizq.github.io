@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>详情页</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="javascript:history.back()">返回</a></li>
+                <li><a href="index.html">主页</a></li>
+                <li><a href="about.html">关于我们</a></li>
+                <li><a href="contact.html">联系我们</a></li>
+                <li><a href="interaction.html">互动</a></li>
+                <li><a href="content.html">投稿</a></li>
+                
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <h1>动态详情</h1>
+        <div id="postContent" class="post-card">
+            <div class="post-header">
+                <img src="avatar.png" alt="用户头像" class="avatar">
+                <div class="user-info">
+                    <span class="username">用户名</span>
+                    <span class="timestamp">1小时前</span>
+                </div>
+            </div>
+            <h2>动态标题</h2>
+            <p>动态内容...</p>
+            <div class="post-stats">
+                <span>点赞 <span class="like-count">0</span></span>
+                <span>评论 <span class="comment-count">0</span></span>
+                <span>转发 <span class="share-count">0</span></span>
+            </div>
+        </div>
+        <div id="interactionArea" class="post-actions">
+            <button id="likeButton" class="like-btn"><i class="fas fa-heart"></i> 点赞</button>
+            <button id="commentButton" class="comment-btn"><i class="fas fa-comment"></i> 评论</button>
+            <button id="shareButton" class="share-btn"><i class="fas fa-share"></i> 转发</button>
+        </div>
+        <div id="relatedRecommendations" class="related-posts">
+            <h2>相关推荐</h2>
+            <div class="post-card">
+                <div class="post-header">
+                    <img src="avatar.png" alt="用户头像" class="avatar">
+                    <div class="user-info">
+                        <span class="username">用户1</span>
+                        <span class="timestamp">2小时前</span>
+                    </div>
+                </div>
+                <p>相关动态1内容...</p>
+                <div class="post-stats">
+                    <span>点赞 <span class="like-count">5</span></span>
+                    <span>评论 <span class="comment-count">3</span></span>
+                </div>
+            </div>
+            <div class="comment-section">
+                <h3>评论</h3>
+                <div class="comment-list">
+                    <div class="comment">
+                        <div class="comment-header">
+                            <img src="avatar.png" alt="用户头像" class="avatar small">
+                            <span class="username">用户A</span>
+                        </div>
+                        <p class="comment-content">评论内容1</p>
+                    </div>
+                </div>
+                <form class="comment-form">
+                    <textarea placeholder="写下你的评论..."></textarea>
+                    <button type="submit" class="submit-comment">发表评论</button>
+                </form>
+            </div>
+        </div>
+    </main>
+    <script src="script.js"></script>
+</body>
+</html>

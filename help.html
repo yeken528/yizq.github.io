@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>高三互助</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
+            padding: 20px;
+        }
+        .help-container {
+            text-align: center;
+            background-color: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            width: 90%;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .question-list {
+            text-align: left;
+            margin-bottom: 40px;
+        }
+        .question-item {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .submit-form {
+            text-align: left;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #666;
+        }
+        textarea, input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        textarea {
+            height: 150px;
+            resize: vertical;
+        }
+        .submit-button {
+            background: linear-gradient(to right, #12c2e9, #c471ed, #f64f59);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            outline: none;
+            font-weight: bold;
+            width: 100%;
+        }
+        .submit-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(0, 0, 0, 0.25);
+        }
+        .submit-button:active {
+            transform: translateY(1px);
+        }
+    </style>
+</head>
+<body>
+    <div class="help-container">
+        <h1>高三互助</h1>
+        <div class="question-list">
+            <div class="question-item">
+                <h3>数学 - 导数问题</h3>
+                <p>如何求函数 f(x) = x^3 - 3x^2 + 2 的极值点？</p>
+            </div>
+            <div class="question-item">
+                <h3>物理 - 力学问题</h3>
+                <p>如何分析物体在斜面上的受力情况？</p>
+            </div>
+        </div>
+        <form class="submit-form">
+            <div class="form-group">
+                <label for="subject">科目</label>
+                <input type="text" id="subject" name="subject" placeholder="请输入科目名称" required>
+            </div>
+            <div class="form-group">
+                <label for="question">问题描述</label>
+                <textarea id="question" name="question" placeholder="请详细描述你的问题" required></textarea>
+            </div>
+            <button type="submit" class="submit-button">提交问题</button>
+        </form>
+    </div>
+</body>
+</html>

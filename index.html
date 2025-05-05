@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>主页</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="announcement-bar">
+        <marquee behavior="scroll" direction="left">重要公告：欢迎访问学生墙网站！</marquee>
+    </div>
+    <header>
+        
+        <nav>
+            <ul>
+                <li><a href="index.html">首页</a></li>
+                <li><a href="submit.html">发布动态</a></li>
+                <li><a href="square.html">问答广场</a></li>
+                <li><a href="user.html">用户中心</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <h1>欢迎使用一中墙</h1>
+        <p>发布你的想法吧。</p>
+        <div id="contentArea">
+            <div id="postList"></div>
+        </div>
+    </main>
+    <script>
+        // 获取所有动态数据
+        function getPosts() {
+            const posts = [];
+            const newPost = JSON.parse(localStorage.getItem('newPost'));
+            const allPosts = JSON.parse(localStorage.getItem('allPosts')) || [];
+            
+            if (newPost) {
+                allPosts.unshift(newPost);
+                localStorage.setItem('allPosts', JSON.stringify(allPosts));
+                localStorage.removeItem('newPost');
+            }
+            
+            return allPosts;
+        }
+
+        // 处理点赞功能
+        function handleLike(postId) {
+            let likes = JSON.parse(localStorage.getItem(`likes_${postId}`)) || {count: 0, liked: false};
+            likes.liked = !likes.liked;
+            likes.count += likes.liked ? 1 : -1;
+            localStorage.setItem(`likes_${postId}`, JSON.stringify(likes));
+            return likes;
+        }
+
+        // 处理评论功能
+        function handleComment(postId, comment) {
+            let comments = JSON.parse(localStorage.getItem(`comments_${postId}`)) || [];
+            comments.push({
+                text: comment,
+                time: new Date().toLocaleString()
+            });
+            localStorage.setItem(`comments_${postId}`, JSON.stringify(comments));
+            
+            // 更新评论列表显示
+            const commentsList = document.querySelector(`#comment-section-${postId} .comments-list`);
+            if(commentsList) {
+                commentsList.innerHTML = comments.map(comment => 
+                    `<div class="comment-item">
+                        <p>${comment.text}</p>
+                        <small>${comment.time}</small>
+                    </div>`
+                ).join('');
+            }
+            return comments;
+        }
+
+        // 渲染动态流
+        function renderPosts() {
+            const postList = document.getElementById('postList');
+            const posts = getPosts();
+            posts.forEach(post => {
+                const postId = post.id || Date.now();
+                const likes = JSON.parse(localStorage.getItem(`likes_${postId}`)) || {count: 0, liked: false};
+                const comments = JSON.parse(localStorage.getItem(`comments_${postId}`)) || [];
+                
+                const postItem = document.createElement('div');
+                postItem.className = 'post-item';
+                postItem.innerHTML = `
+                    <div class="post-header">
+                        <h3>${post.title}</h3>
+                        <button class="delete-btn" data-post-id="${postId}">
+                            <i class="fas fa-trash" style="color: #999;"></i>
+                        </button>
+                    </div>
+                    <p>${post.content}</p>
+                    <div class="post-time">${post.time}</div>
+                    <div class="post-actions">
+                        <button class="like-btn ${likes.liked ? 'liked' : ''}" data-post-id="${postId}">
+                            <i class="fas fa-heart"></i>
+                            <span class="like-count">${likes.count}</span>
+                        </button>
+                        <button class="comment-btn" data-post-id="${postId}">
+                            <i class="fas fa-comment"></i>
+                            <span class="comment-count">${comments.length}</span>
+                        </button>
+                        <button class="share-btn"><i class="fas fa-share"></i></button>
+                    </div>
+                    <div class="comment-section" id="comment-section-${postId}" style="display:none;">
+                        <div class="comments-list"></div>
+                        <div class="comment-form">
+                            <textarea placeholder="写下你的评论..."></textarea>
+                            <button class="submit-comment">提交评论</button>
+                        </div>
+                    </div>
+                `;
+                
+                postList.prepend(postItem);
+            });
+
+            // 添加事件监听
+            document.querySelectorAll('.like-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const postId = this.getAttribute('data-post-id');
+                    const likes = handleLike(postId);
+                    this.classList.toggle('liked');
+                    this.querySelector('.like-count').textContent = likes.count;
+                });
+            });
+
+            document.querySelectorAll('.comment-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const postId = this.getAttribute('data-post-id');
+                    const commentSection = document.getElementById(`comment-section-${postId}`);
+                    commentSection.style.display = commentSection.style.display === 'none' ? 'block' : 'none';
+                        // 重置评论表单显示状态
+                        const commentForm = commentSection.querySelector('.comment-form');
+                        commentForm.style.display = 'block';
+                });
+            });
+
+            document.querySelectorAll('.submit-comment').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const postId = this.closest('.comment-section').id.replace('comment-section-', '');
+                    const textarea = this.previousElementSibling;
+                    if (textarea.value.trim()) {
+                        const comments = handleComment(postId, textarea.value.trim());
+                        textarea.value = '';
+                        const commentCount = document.querySelector(`.comment-btn[data-post-id="${postId}"] .comment-count`);
+                        commentCount.textContent = comments.length;
+                        // 提交后仅清空内容，不隐藏表单
+                        textarea.value = '';
+                    }
+                });
+            });
+
+            // 添加删除按钮事件监听
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const postId = this.getAttribute('data-post-id');
+                    const allPosts = JSON.parse(localStorage.getItem('allPosts')) || [];
+                    const updatedPosts = allPosts.filter(post => {
+                        const storedPostId = post.id || Date.parse(post.time);
+                        return storedPostId !== parseInt(postId);
+                    });
+                    localStorage.setItem('allPosts', JSON.stringify(updatedPosts));
+                    localStorage.removeItem(`likes_${postId}`);
+                    localStorage.removeItem(`comments_${postId}`);
+                    this.closest('.post-item').remove();
+                });
+            });
+        }
+
+        // 初始化渲染
+        renderPosts();
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>
